@@ -4,13 +4,11 @@ import psycopg2
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-from data_extraction import DataExtractor
-
 class DatabaseConnector:
     """A class containing methods to perform and execute actions on AWS and Postres databases."""
     def _read_db_creds(self):
         """Reads and returns the RDS database credentials from a yaml file."""
-        creds_path = "AICore\mrdc\multinational-retail-data-centralisation\db_creds.yaml"
+        creds_path = "C:/Users/Elliot/pyproj/AICore/mrdc/multinational-retail-data-centralisation/db_creds.yaml"
         with open(creds_path, 'r') as f:
             creds_dict = yaml.load(f, Loader=yaml.FullLoader)
             return creds_dict
@@ -38,7 +36,7 @@ class DatabaseConnector:
             results = connection.execute(select_query)
             return results
 
-    def upload_to_db(self, df, upload_table_name='dim_card_details'):
+    def upload_to_db(self, df, upload_table_name='dim_date_times'):
         """Uploads a dataframe to a PostreSQL table."""
         # Database connection parameters
         db_params = {
@@ -60,7 +58,4 @@ class DatabaseConnector:
             # Raise an error if dataframe not uploaded successfully
             print("Error:", e)
 
-"""DC = DatabaseConnector()
-DE = DataExtractor()
-df = DE.retrieve_pdf_data()
-DC.upload_to_db(df)"""
+

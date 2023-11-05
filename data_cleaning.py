@@ -1,5 +1,4 @@
 from dateutil.parser import parse
-from database_utils import DatabaseConnector as DC
 
 import pandas as pd
 import numpy as np
@@ -57,5 +56,45 @@ class DataCleaning:
     def clean_card_data(self, df):
         """A method for cleaning the card details table read from a pdf."""
         df.dropna(inplace=True)
+        return df
+    
+    def called_clean_store_data(self, df):
+        """Cleans data from retrieve_stores_data method."""
+        df.dropna(inplace=True)
+        return df
+
+    def convert_product_weights(self, df):
+        """Cleans products table weight column"""
+        df.dropna(inplace=True)
+        # Extract numeric part
+        df['weight_numeric'] = df['weight'].str.extract('(\d+\.\d+|\d+)').astype(float)  
+        # Extract unit part
+        df['weight_unit'] = df['weight'].str.extract('([a-zA-Z]+)')  
+        df['weight_numeric'] = np.where(df['weight_unit'] == 'ml', df['weight_numeric'], 
+                                        np.where(df['weight_unit'] == 'g', df['weight_numeric'] / 1000, 
+                                                 df['weight_numeric']))
+        df['weight'] = df['weight_numeric'].round(2)
+        df = df.drop(columns=['weight_numeric', 'weight_unit'])  # Corrected typo here
+        return df
+        
+    def clean_products_data(self, df):
+        """Cleans data from products table dataframe."""
+        #TODO deal with 0 weights
+        df.dropna(inplace=True)
+        return df
+    
+    def clean_orders_data(self, df):
+        """Cleans data from orders table by dropping incomplete columns."""
+        df = df.drop(columns=['first_name', 'last_name', '1'])
+        return df
+    
+    def clean_date_times(self, df):
+        """Cleans data from the date_times table."""
+        df['month'] = pd.to_numeric(df['month'], errors='coerce')
+        # Drop rows where 'months' column is NaN (non-integer values)
+        df.dropna(inplace=True)
+        return df
+
+
         
                  
