@@ -2,6 +2,8 @@ from dateutil.parser import parse
 
 import pandas as pd
 import numpy as np
+import uuid
+import psycopg2
 
 class DataCleaning:
     """A class containing methods for cleaning user and card data."""
@@ -58,9 +60,12 @@ class DataCleaning:
         df.dropna(inplace=True)
         return df
     
-    def called_clean_store_data(self, df):
+    def clean_store_data(self, df):
         """Cleans data from retrieve_stores_data method."""
-        df.dropna(inplace=True)
+        df.drop('lat', axis=1, inplace=True)
+        df['latitude'] = pd.to_numeric(df['latitude'], errors='coerce')
+        df['staff_numbers'] = pd.to_numeric(df['staff_numbers'], errors='coerce')
+        df.dropna(subset=['latitude'], inplace=True)
         return df
 
     def convert_product_weights(self, df):
@@ -74,13 +79,14 @@ class DataCleaning:
                                         np.where(df['weight_unit'] == 'g', df['weight_numeric'] / 1000, 
                                                  df['weight_numeric']))
         df['weight'] = df['weight_numeric'].round(2)
-        df = df.drop(columns=['weight_numeric', 'weight_unit'])  # Corrected typo here
+        df = df.drop(columns=['weight_numeric', 'weight_unit']) 
         return df
         
     def clean_products_data(self, df):
         """Cleans data from products table dataframe."""
-        #TODO deal with 0 weights
-        df.dropna(inplace=True)
+        df['weight'] = df['weight'].replace(0, np.nan)
+        df['product_price'] = df['product_price'].str.replace('£', '')
+        df['product_price'] = pd.to_numeric(df['product_price'], errors='coerce')
         return df
     
     def clean_orders_data(self, df):

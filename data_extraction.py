@@ -6,19 +6,16 @@ import boto3
 
 from sqlalchemy import text
 
-from database_utils import DatabaseConnector as DC
-from data_cleaning import DataCleaning
-
 class DataExtractor:
     """
     A utility class that contains methods which extract data from CSV files, an API and an S3 bucket.
     """
-    def read_rds_table(self, DC, table_name='orders_table'):
+    def read_rds_table(self, Connector, table_name='orders_table'):
         """Reads a specified table from the RDS database."""
         # Get database credentials
-        creds_dict = DC._read_db_creds(self)
+        creds_dict = Connector._read_db_creds()
         # Extract data from the specified table and return as a pandas DataFrame
-        with DC._init_db_engine(self, creds_dict).connect() as connection:
+        with Connector._init_db_engine(creds_dict).connect() as connection:
             select_query = text(f"""
                                 SELECT *
                                 FROM {table_name}
@@ -78,8 +75,8 @@ class DataExtractor:
 
     def extract_from_s3(self, s3_path='s3://data-handling-public/products.csv'):
         """Downloads and extracts data from the products.csv file from an s3 bucket."""
-        # Initialize the S3 client
-        """boto3.setup_default_session(profile_name='Elliot')
+        """# Initialize the S3 client
+        boto3.setup_default_session(profile_name='Elliot')
         
         # S3 bucket and file details
         bucket_name = 'data-handling-public'
@@ -91,16 +88,16 @@ class DataExtractor:
         # Read the CSV file into a DataFrame
         df = pd.read_csv('products.csv')
 
-        # Now df contains your data from the S3 bucket
         return df 
     
-    def retrieve_json_data(self, path='https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json'):
+    def retrieve_json_datetime(self, path='https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json'):
         response = requests.get(path)
         # Check if the request was successful
         if response.status_code == 200:
             # Parse JSON content into a DataFrame
             json_data = response.json()
             df = pd.DataFrame(json_data)
+            print(df.info())
             return df
         else:
             print("Failed to retrieve JSON data from the URL.")

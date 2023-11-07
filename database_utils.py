@@ -36,7 +36,7 @@ class DatabaseConnector:
             results = connection.execute(select_query)
             return results
 
-    def upload_to_db(self, df, upload_table_name='dim_date_times'):
+    def upload_to_db(self, df, upload_table_name='orders_table'):
         """Uploads a dataframe to a PostreSQL table."""
         # Database connection parameters
         db_params = {
