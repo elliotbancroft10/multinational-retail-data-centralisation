@@ -56,5 +56,3 @@ class DatabaseConnector:
         except Exception as e:
             # Raise an error if dataframe not uploaded successfully
             print("Error:", e)
-
-
