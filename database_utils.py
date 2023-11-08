@@ -2,10 +2,9 @@ import yaml
 import psycopg2
 
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
 
 class DatabaseConnector:
-    """A class containing methods to perform and execute actions on AWS and Postres databases."""
+    """A class containing methods to perform and execute actions on AWS and PostgreSQL databases."""
     def _read_db_creds(self):
         """Reads and returns the RDS database credentials from a yaml file."""
         creds_path = "C:/Users/Elliot/pyproj/AICore/mrdc/multinational-retail-data-centralisation/db_creds.yaml"
@@ -38,12 +37,13 @@ class DatabaseConnector:
 
     def upload_to_db(self, df, upload_table_name='orders_table'):
         """Uploads a dataframe to a PostreSQL table."""
-        # Database connection parameters
+        # Database connection parameters from login credentials file
+        login_path = "pgadmin_login_creds.json"
         db_params = {
-            "host": "localhost",
-            "database": "sales_data",
-            "user": "postgres",
-            "password": "bancr0ft"
+            "host": login_path["host"],
+            "database": login_path["database"],
+            "user": login_path["user"],
+            "password": login_path["password"]
         }      
         try:
             # Establish a connection to the PostgreSQL database
@@ -52,8 +52,7 @@ class DatabaseConnector:
                 )
             # Use pandas to upload the DataFrame to the database
             df.to_sql(upload_table_name, engine, if_exists='replace', index=False)
-            print("DataFrame uploaded successfully!")
-
+            print("DataFrame uploaded successfully.")
         except Exception as e:
             # Raise an error if dataframe not uploaded successfully
             print("Error:", e)
