@@ -23,5 +23,3 @@ The project taught and consolidated skills and methods required to extract data 
 -[sqlalchemy](https://www.sqlalchemy.org/) - SQL toolkit and Object-Relational Mapping (ORM) library for Python.
 -[tabula](https://tabula-py.readthedocs.io/) - Extracts tables from PDFs into pandas DataFrames.
 -[yaml](https://pyyaml.org/wiki/PyYAMLDocumentation) - YAML parser and emitter for Python.
-
-
