@@ -100,4 +100,3 @@ class DataExtractor:
             return df
         else:
             print("Failed to retrieve JSON data from the URL.")
-            
