@@ -105,8 +105,4 @@ class DataCleaning:
         # non-numeric values to NULL
         df['month'] = df['month'].str.lower().map(month_mapping)
         df['month'] = pd.to_numeric(df['month'], errors='coerce')
-        return df
-
-
-        
-                 
+        return df      
